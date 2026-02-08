@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactored Kanban</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <h1>Kanban Board</h1>
+    <div id="kanban"></div>
+
+    <script>
+        // Utility functions
+        function parseDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) throw new Error('Invalid date');
+            return date;
+        }
+
+        function validateKPI(kpi) {
+            return typeof kpi === 'number' && kpi >= 0;
+        }
+
+        // KPI calculations
+        function calculateKPI(tasks) {
+            const completedTasks = tasks.filter(task => task.completed);
+            const totalTasks = tasks.length;
+            const completionRate = (completedTasks.length / totalTasks) * 100;
+            return validateKPI(completionRate) ? completionRate : 0;
+        }
+
+        // Gantt chart rendering
+        function renderGanttChart(tasks) {
+            // Fallback rendering logic
+            if (!tasks.length) {
+                console.log('No tasks to render.');
+                return;
+            }
+            // Logic to render Gantt chart
+        }
+
+        // Future task calculations
+        function calculateFutureTasks(tasks) {
+            const futureTasks = tasks.filter(task => parseDate(task.dueDate) > new Date());
+            return futureTasks;
+        }
+
+        // Sample tasks
+        const tasks = [
+            { name: 'Task 1', dueDate: '2026-02-10', completed: false },
+            { name: 'Task 2', dueDate: '2026-02-15', completed: true }
+        ];
+
+        const kpi = calculateKPI(tasks);
+        console.log('KPI:', kpi);
+        renderGanttChart(tasks);
+        console.log('Future tasks:', calculateFutureTasks(tasks));
+    </script>
+</body>
+</html>
