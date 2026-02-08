@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board V85</title>
+    <script>
+        // Date utility functions
+        class DateUtils {
+            static parseDate(dateString) {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) { // Validate date
+                    console.error('Invalid date:', dateString);
+                    return null;
+                }
+                return date;
+            }
+        }
+
+        // Number utility functions
+        class NumUtils {
+            static isNumber(value) {
+                return typeof value === 'number' && !isNaN(value);
+            }
+        }
+
+        // KPI calculations
+        class KPICalculator {
+            constructor() {
+                this.totalKPIs = 0;
+            }
+
+            calculateKPIs(data) {
+                this.totalKPIs = 0;
+                data.forEach(item => {
+                    if (NumUtils.isNumber(item.kpi)) {
+                        this.totalKPIs += item.kpi;
+                    }
+                });
+                console.log('Total KPI:', this.totalKPIs);
+            }
+        }
+
+        // Gantt chart rendering
+        class GanttRenderer {
+            constructor() {
+                this.data = [];
+            }
+
+            render(data) {
+                if (!data || data.length === 0) {
+                    console.warn('No data available for Gantt chart rendering.');
+                    return;
+                }
+                // Render logic here
+                console.log('Gantt chart rendered with:', data);
+                this.data = data;
+            }
+        }
+
+        // Main Application Logic
+        const kpiCalculator = new KPICalculator();
+        const ganttRenderer = new GanttRenderer();
+
+        function importExcelData(excelData) {
+            const parsedData = excelData.map(row => ({
+                date: DateUtils.parseDate(row.date),
+                kpi: row.kpi
+            })).filter(item => item.date);
+
+            kpiCalculator.calculateKPIs(parsedData);
+            ganttRenderer.render(parsedData);
+        }
+
+        // Example data import
+        const exampleExcelData = [
+            { date: '2026-02-01', kpi: 5 },
+            { date: 'invalid-date', kpi: 3 },
+            { date: '2026-02-03', kpi: 7 }
+        ];
+
+        importExcelData(exampleExcelData);
+    </script>
+</head>
+<body>
+    <h1>Kanban Board V85</h1>
+    <div id="board"></div>
+</body>
+</html>
