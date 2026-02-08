@@ -1,43 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kanban Board</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="kpiCalculator.js"></script>
-    <script src="dateValidation.js"></script>
-    <script src="ganttChart.js"></script>
-</head>
-<body>
-    <div id="kanban">
-        <h1>Kanban Board</h1>
-        <div id="kpi-container">
-            <h2>KPI Dashboard</h2>
-            <div id="kpi-results"></div>
-        </div>
-        <div id="gantt-chart-container">
-            <h2>Gantt Chart</h2>
-            <div id="gantt-chart"></div>
-        </div>
-    </div>
-    <script>
-        // Initialize KPI calculations
-        const kpiData = [...]; // Fetch or define your KPI data
-        const kpiResults = calculateKPIs(kpiData);
-        document.getElementById('kpi-results').innerHTML = renderKPIResults(kpiResults);
-
-        // Initialize Gantt chart
-        const tasks = [...]; // Define your tasks
-        renderGanttChart(tasks);
-
-        // Error handling for date parsing
-        try {
-            const parsedDate = validateDate('2026-02-08'); // Example date
-        } catch (error) {
-            console.error('Date parsing error:', error);
-            alert('Invalid date provided.');
+// DateUtils.js
+class DateUtils {
+    static parseDate(dateString) {
+        const date = new Date(dateString);
+        if (isNaN(date)) {
+            throw new Error('Invalid date format');
         }
-    </script>
-</body>
-</html>
+        return date;
+    }
+    static formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+    static validateDate(dateString) {
+        const date = new Date(dateString);
+        return !isNaN(date);
+    }
+}
+
+// NumUtils.js
+class NumUtils {
+    static calculatePercentage(value, total) {
+        return (total > 0) ? (value / total) * 100 : 0;
+    }
+    static roundToTwo(value) {
+        return Math.round((value + Number.EPSILON) * 100) / 100;
+    }
+}
+
+// KPICalculator.js
+class KPICalculator {
+    constructor(tasks) {
+        this.tasks = tasks;
+        this.completedTasks = tasks.filter(task => task.status === 'completed');
+    }
+    calculateCompletionRate() {
+        return NumUtils.calculatePercentage(this.completedTasks.length, this.tasks.length);
+    }
+    calculateAverageTime() {
+        const totalDuration = this.completedTasks.reduce((acc, task) => acc + task.duration, 0);
+        return this.completedTasks.length > 0 ? totalDuration / this.completedTasks.length : 0;
+    }
+}
+
+// GanttRenderer.js
+class GanttRenderer {
+    constructor(tasks) {
+        this.tasks = tasks;
+    }
+    render() {
+        // Basic Gantt chart rendering logic would go here
+        console.log('Rendering Gantt chart...');
+    }
+    renderWithFallback() {
+        try {
+            this.render();
+        } catch (error) {
+            console.error('Error rendering Gantt chart:', error);
+            // Fallback rendering logic
+        }
+    }
+}
+
+// Main Kanban Class
+class Kanban {
+    constructor(tasks) {
+        this.tasks = tasks;
+        this.kpiCalculator = new KPICalculator(tasks);
+        this.ganttRenderer = new GanttRenderer(tasks);
+    }
+    getFutureTasks() {
+        const today = new Date();
+        return this.tasks.filter(task => new Date(task.dueDate) > today);
+    }
+    generateReport() {
+        console.log('Completion Rate:', this.kpiCalculator.calculateCompletionRate(), '%');
+        console.log('Average Completion Time:', this.kpiCalculator.calculateAverageTime(), 'days');
+    }
+    renderGanttChart() {
+        this.ganttRenderer.renderWithFallback();
+    }
+}
