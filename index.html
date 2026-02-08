@@ -4,32 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kanban Board</title>
-    <script src="DateUtils.js"></script>
-    <script src="NumUtils.js"></script>
-    <script src="KPICalculator.js"></script>
-    <script src="GanttRenderer.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="kpiCalculator.js"></script>
+    <script src="dateValidation.js"></script>
+    <script src="ganttChart.js"></script>
 </head>
 <body>
-    <div id="kanban-board">
-        <!-- Kanban Board Structure -->
+    <div id="kanban">
+        <h1>Kanban Board</h1>
+        <div id="kpi-container">
+            <h2>KPI Dashboard</h2>
+            <div id="kpi-results"></div>
+        </div>
+        <div id="gantt-chart-container">
+            <h2>Gantt Chart</h2>
+            <div id="gantt-chart"></div>
+        </div>
     </div>
-
     <script>
-        // Initialize and structure the Kanban board here
-        const kanbanBoardElement = document.getElementById('kanban-board');
+        // Initialize KPI calculations
+        const kpiData = [...]; // Fetch or define your KPI data
+        const kpiResults = calculateKPIs(kpiData);
+        document.getElementById('kpi-results').innerHTML = renderKPIResults(kpiResults);
 
-        // Implement logic to use DateUtils, NumUtils, KPICalculator, and GanttRenderer.
-        // Example of usage:
+        // Initialize Gantt chart
+        const tasks = [...]; // Define your tasks
+        renderGanttChart(tasks);
+
+        // Error handling for date parsing
         try {
-            const date = DateUtils.parseDate('2023-01-01');
-            if (!date) {
-                throw new Error('Invalid date');
-            }
-            const kpi = KPICalculator.calculateKPI(dataset);
-            const ganttChart = new GanttRenderer();
-            ganttChart.render(dataset);
+            const parsedDate = validateDate('2026-02-08'); // Example date
         } catch (error) {
-            console.error('Error:', error.message);
+            console.error('Date parsing error:', error);
+            alert('Invalid date provided.');
         }
     </script>
 </body>
